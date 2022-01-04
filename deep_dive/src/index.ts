@@ -555,3 +555,80 @@
 //   console.log(value); // "one"
 //   // 両方ともresolveされるが、task1の方が早く終わる
 // });
+
+// ジェネレータ
+// function* infiniteSequence() {
+//   var i = 0;
+//   while (true) {
+//     yield i++;
+//   }
+// }
+
+// var iterator = infiniteSequence();
+// console.log(iterator.next());
+
+// while (true) {
+//   console.log(iterator.next()); // { value: xxxx, done: false } forever and ever
+// }
+
+// function* generator() {
+//   console.log("Execution started");
+//   yield 0;
+//   console.log("Execution resumed");
+//   yield 1;
+//   console.log("Execution resumed");
+// }
+
+// var iterator = generator();
+// console.log("Starting iteration"); // これはジェネレータ関数の本体の前に実行されます
+// console.log(iterator.next()); // { value: 0, done: false }
+// console.log(iterator.next()); // { value: 1, done: false }
+// console.log(iterator.next()); // { value: undefined, done: true }
+
+// function* generator() {
+//   var bar: string = yield "foo";
+//   console.log(bar); // bar!
+// }
+
+// const iterator = generator();
+// // 最初に`yield`された値を取得するまで実行する
+// const foo = iterator.next();
+// console.log(foo.value); // foo
+// // `bar`を注入して処理を再開する
+// const nextThing = iterator.next("bar");
+
+// ------------------------- asunc await -----------------------------
+// 内部ではジェネレータが使われている
+
+// const foo = wrapToReturnPromise(function* () {
+//     try {
+//         var val = yield getMeAPromise();
+//         console.log(val);
+//     }
+//     catch(err) {
+//         console.log('Error: ', err.message);
+//     }
+// });
+
+// function delay(milliseconds: number, count: number): Promise<number> {
+//   return new Promise<number>((resolve) => {
+//     setTimeout(() => {
+//       resolve(count);
+//     }, milliseconds);
+//   });
+// }
+
+// // async関数は常にPromiseを返します
+// async function dramaticWelcome(): Promise<void> {
+//   console.log("Hello");
+
+//   for (let i = 0; i < 5; i++) {
+//     // awaitは、Promise<number>をnumberに変換します
+//     const count: number = await delay(500, i);
+//     console.log(count);
+//   }
+//   await delay(500, 1);
+//   console.log("World!");
+// }
+
+// dramaticWelcome();
