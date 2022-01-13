@@ -632,3 +632,706 @@
 // }
 
 // dramaticWelcome();
+
+// enum AnimalFlags {
+//     None           = 0,
+//     HasClaws       = 1 << 0,
+//     CanFly         = 1 << 1,
+//     EatsFish       = 1 << 2,
+//     Endangered     = 1 << 3
+// }
+
+// enum AnimalFlags {
+//   None = 0,
+//   HasClaws = 1 << 0,
+//   CanFly = 1 << 1,
+// }
+// type Animal = {
+//   flags: AnimalFlags;
+// };
+
+// function printAnimalAbilities(animal: Animal) {
+//   var animalFlags = animal.flags;
+//   if (animalFlags & AnimalFlags.HasClaws) {
+//     console.log("animal has claws");
+//   }
+//   if (animalFlags & AnimalFlags.CanFly) {
+//     console.log("animal can fly");
+//   }
+//   if (animalFlags == AnimalFlags.None) {
+//     console.log("nothing");
+//   }
+// }
+// console.log(AnimalFlags.None, "None"); // 0
+// console.log(AnimalFlags.CanFly, "CanFly"); // 2
+
+// let animal: Animal = { flags: AnimalFlags.None };
+// printAnimalAbilities(animal); // nothing
+// animal.flags |= AnimalFlags.HasClaws;
+// printAnimalAbilities(animal); // animal has claws
+// animal.flags &= ~AnimalFlags.HasClaws;
+// printAnimalAbilities(animal); // nothing
+// animal.flags |= AnimalFlags.HasClaws | AnimalFlags.CanFly;
+// printAnimalAbilities(animal); // animal has claws, animal can fly
+
+// // 文字列列挙型
+// export enum EvidenceTypeEnum {
+//   UNKNOWN = "",
+//   PASSPORT_VISA = "passport_visa",
+//   PASSPORT = "passport",
+//   SIGHTED_STUDENT_CARD = "sighted_tertiary_edu_id",
+//   SIGHTED_KEYPASS_CARD = "sighted_keypass_card",
+//   SIGHTED_PROOF_OF_AGE_CARD = "sighted_proof_of_age_card",
+// }
+
+// // Where `someStringFromBackend` will be '' | 'passport_visa' | 'passport' ... etc.
+// const value = someStringFromBackend as EvidenceTypeEnum;
+
+// // Sample use in code
+// if (value === EvidenceTypeEnum.PASSPORT) {
+//   console.log("You provided a passport");
+//   console.log(value); // `passport`
+// }
+
+// ---------------- 関数の型 ---------------------
+// // variable annotation
+// var sampleVariable: { bar: number };
+
+// // function parameter annotation
+// function foo(sampleParameter: { bar: number }) {}
+
+// interface Foo {
+//   foo: string;
+// }
+
+// // Return type annotated as `: Foo`
+// function foo(sample: Foo): Foo {
+//   return sample;
+// }
+
+// // オプションパラメータ
+// function foo(bar: number, bas?: string): void {
+//   // ..
+// }
+
+// foo(123);
+// foo(123, "hello");
+
+// パラメータが渡されない場合にデフォルト値を設定できる
+// function foo(bar: number, bas: string = 'hello') {
+//   console.log(bar, bas);
+// }
+
+// foo(123);           // 123, hello
+// foo(123, 'world');  // 123, world
+
+// オーバーロード
+// function padding(a: number, b?: number, c?: number, d?: any) {
+//   if (b === undefined && c === undefined && d === undefined) {
+//     b = c = d = a;
+//   } else if (c === undefined && d === undefined) {
+//     c = a;
+//     d = b;
+//   }
+//   return {
+//     top: a,
+//     right: b,
+//     bottom: c,
+//     left: d,
+//   };
+// }
+
+// Overloads
+// function padding(all: number);
+// function padding(topAndBottom: number, leftAndRight: number);
+// function padding(top: number, right: number, bottom: number, left: number);
+// // Actual implementation that is a true representation of all the cases the function body needs to handle
+// function padding(a: number, b?: number, c?: number, d?: number) {
+//     if (b === undefined && c === undefined && d === undefined) {
+//         b = c = d = a;
+//     }
+//     else if (c === undefined && d === undefined) {
+//         c = a;
+//         d = b;
+//     }
+//     return {
+//         top: a,
+//         right: b,
+//         bottom: c,
+//         left: d
+//     };
+// }
+
+// type HasFoo = {
+//   foo: number;
+// };
+// type HasBar = {
+//   bar: string;
+// };
+
+// type ReturnFooAndBar = {
+//   (arg1: number): HasFoo & HasBar;
+//   (arg1: string, arg2: number): HasFoo & HasBar;
+// };
+
+// function returnFooAndBar(arg1: number): HasFoo & HasBar;
+// function returnFooAndBar(arg1: string, arg2: number): HasFoo & HasBar;
+// function returnFooAndBar(arg1: number | string, arg2?: number) {
+//   return {};
+// }
+
+// const x: ReturnFooAndBar = returnFooAndBar; // ok
+
+// const y = returnFooAndBar(1); // const y: HasFoo & HasBar
+// y.foo; // (property) foo: number
+// y.bar; // (property) bar: string
+
+// // 実際には foo も bar も undefined
+// console.log(y.foo, y.bar); // undefined undefined
+
+// const returnFooAndBar: ReturnFooAndBar = (
+//   arg1: number | string,
+//   arg2?: number,
+// ) => {
+//   if (typeof arg1 === "number") {
+//     return {
+//       foo: arg1,
+//       bar: "a",
+//     };
+//   } else if (typeof arg2 === "number") {
+//     return {
+//       foo: arg2,
+//       bar: arg1,
+//     };
+//   }
+//   // 以下のコードはどのようなケースでも実行されないが、これがないと TypeScript がエラーを出す
+//   return {
+//     foo: 1,
+//     bar: arg1,
+//   };
+// };
+
+// returnFooAndBar(9); //ok
+// returnFooAndBar("z", 9); // ok
+// returnFooAndBar(9, 8); // Argument of type '9' is not assignable to parameter of type 'string'.ts(2345)
+// returnFooAndBar("z"); // Argument of type '"z"' is not assignable to parameter of type 'number'.ts(2345)
+
+// -------------------呼び出し可能オブジェクト-------------------------------------
+
+// interface ReturnString {
+//   (): string;
+// }
+
+// declare const foo: ReturnString;
+// const bar = foo(); // bar is inferred as a string
+
+// interface Complex {
+//   (foo: string, bar?: number, ...others: boolean[]): number;
+// }
+
+// interface Overloaded {
+//   (foo: string): string;
+//   (foo: number): number;
+// }
+
+// // example implementation
+// function stringOrNumber(foo: number): number;
+// function stringOrNumber(foo: string): string;
+// function stringOrNumber(foo: any): any {
+//   if (typeof foo === "number") {
+//     return foo * foo;
+//   } else if (typeof foo === "string") {
+//     return `hello ${foo}`;
+//   }
+// }
+
+// const overloaded: Overloaded = stringOrNumber;
+
+// // example usage
+// const str = overloaded(""); // type of `str` is inferred as `string`
+// const num = overloaded(123); // type of `num` is inferred as `number`
+
+// // アロー構文の場合はオーバーロードできない！！
+// const simple: (foo: number) => string = (foo) => foo.toString();
+
+// interface CallMeWithNewToGetString {
+//   new (): string;
+// }
+// // Usage
+// declare const Foo: CallMeWithNewToGetString;
+// const bar = new Foo(); // bar is inferred to be of type string
+
+// // ------------- Type Assertion ------------------------
+
+// interface Foo {
+//   bar: number;
+//   bas: string;
+// }
+// var foo = {} as Foo;
+// foo.bar = 123;
+// foo.bas = "hello";
+
+// // --------------- Freshness -------------------------------------------
+// function logName(something: { name: string }) {
+//   console.log(something.name);
+// }
+
+// var person = { name: "matt", job: "being awesome" };
+// var animal = { name: "cow", diet: "vegan, but has milk of own species" };
+// var random = { note: `I don't have a name property` };
+
+// logName(person); // okay
+// logName(animal); // okay
+// logName(random); // Error: property `name` is missing
+
+// logName({ name: "matt" }); // okay
+// logName({ name: "matt", job: "being awesome" }); // Error: object literals must only specify known properties. `job` is excessive here.
+
+// function logIfHasName(something: { name?: string }) {
+//   if (something.name) {
+//     console.log(something.name);
+//   }
+// }
+// var person = { name: "matt", job: "being awesome" };
+// var animal = { name: "cow", diet: "vegan, but has milk of own species" };
+
+// logIfHasName(person); // okay
+// logIfHasName(animal); // okay
+// logIfHasName({ neme: "I just misspelled name to neme" }); // Error: object literals must only specify known properties. `neme` is excessive here.
+
+// // ---------------- 型ガード -------------------------------
+// function doSomething(x: number | string) {
+//   if (typeof x === "string") {
+//     // Within the block TypeScript knows that `x` must be a string
+//     console.log(x.subtr(1)); // Error, 'subtr' does not exist on `string`
+//     console.log(x.substr(1)); // OK
+//   }
+//   x.substr(1); // Error: There is no guarantee that `x` is a `string`
+// }
+
+// class Foo {
+//   foo = 123;
+//   common = '123';
+// }
+
+// class Bar {
+//   bar = 123;
+//   common = '123';
+// }
+
+// function doStuff(arg: Foo | Bar) {
+//   if (arg instanceof Foo) {
+//       console.log(arg.foo); // OK
+//       console.log(arg.bar); // Error!
+//   }
+//   if (arg instanceof Bar) {
+//       console.log(arg.foo); // Error!
+//       console.log(arg.bar); // OK
+//   }
+
+//   console.log(arg.common); // OK
+//   console.log(arg.foo); // Error!
+//   console.log(arg.bar); // Error!
+// }
+
+// doStuff(new Foo());
+// doStuff(new Bar());
+
+// // else内でも型推論が効く
+// class Foo {
+//   foo = 123;
+// }
+
+// class Bar {
+//   bar = 123;
+// }
+
+// function doStuff(arg: Foo | Bar) {
+//   if (arg instanceof Foo) {
+//       console.log(arg.foo); // OK
+//       console.log(arg.bar); // Error!
+//   }
+//   else {  // MUST BE Bar!
+//       console.log(arg.foo); // Error!
+//       console.log(arg.bar); // OK
+//   }
+// }
+
+// doStuff(new Foo());
+// doStuff(new Bar());
+
+// interface A {
+//   x: number;
+// }
+// interface B {
+//   y: string;
+// }
+
+// function doStuff(q: A | B) {
+//   if ("x" in q) {
+//     // q: A
+//   } else {
+//     // q: B
+//   }
+// }
+
+// type TriState = "yes" | "no" | "unknown";
+
+// function logOutState(state: TriState) {
+//   if (state == "yes") {
+//     console.log("User selected yes");
+//   } else if (state == "no") {
+//     console.log("User selected no");
+//   } else {
+//     console.log("User has not made a selection yet");
+//   }
+// }
+
+// type Foo = {
+//   kind: "foo"; // Literal type
+//   foo: number;
+// };
+// type Bar = {
+//   kind: "bar"; // Literal type
+//   bar: number;
+// };
+
+// function doStuff(arg: Foo | Bar) {
+//   if (arg.kind === "foo") {
+//     console.log(arg.foo); // OK
+//     console.log(arg.bar); // Error!
+//   } else {
+//     // MUST BE Bar!
+//     console.log(arg.foo); // Error!
+//     console.log(arg.bar); // OK
+//   }
+// }
+
+// function foo(a?: number | null) {
+//   if (a == null) return;
+
+//   // a is number now.
+// }
+
+// /**
+//  * Just some interfaces
+//  */
+// interface Foo {
+//   foo: number;
+//   common: string;
+// }
+
+// interface Bar {
+//   bar: number;
+//   common: string;
+// }
+
+// /**
+//  * User Defined Type Guard!
+//  */
+// function isFoo(arg: any): arg is Foo {
+//   return arg.foo !== undefined;
+// }
+
+// /**
+//  * Sample usage of the User Defined Type Guard
+//  */
+// function doStuff(arg: Foo | Bar) {
+//   if (isFoo(arg)) {
+//     console.log(arg.foo); // OK
+//     console.log(arg.bar); // Error!
+//   } else {
+//     console.log(arg.foo); // Error!
+//     console.log(arg.bar); // OK
+//   }
+// }
+
+// doStuff({ foo: 123, common: "123" });
+// doStuff({ bar: 123, common: "123" });
+
+// // Example Setup
+// declare var foo: { bar?: { baz: string } };
+// function immediate(callback: () => void) {
+//   callback();
+// }
+
+// // Type Guard
+// if (foo.bar) {
+//   console.log(foo.bar.baz); // Okay
+//   functionDoingSomeStuff(() => {
+//     console.log(foo.bar.baz); // TS error: Object is possibly 'undefined'"
+//   });
+// }
+
+// // Type Guard
+// if (foo.bar) {
+//   console.log(foo.bar.baz); // Okay
+//   const bar = foo.bar;
+//   functionDoingSomeStuff(() => {
+//     console.log(bar.baz); // Okay
+//   });
+// }
+
+// ---------------------- リテラル型 ------------------------------------
+// let foo: "Hello";
+// foo = "Bar"; // Error: "Bar" is not assignable to type "Hello"
+
+// type CardinalDirection = "North" | "East" | "South" | "West";
+
+// function move(distance: number, direction: CardinalDirection) {
+//   // ...
+// }
+
+// move(1, "North"); // Okay
+// move(1, "Nurth"); // Error!
+
+// type OneToFive = 1 | 2 | 3 | 4 | 5;
+// type Bools = true | false;
+
+// function iTakeFoo(foo: "foo") {}
+// const test = {
+//   someProp: "foo",
+// };
+// iTakeFoo(test.someProp); // Error: Argument of type string is not assignable to parameter of type 'foo'
+
+// function iTakeFoo(foo: "foo") {}
+// const test = {
+//   someProp: "foo" as "foo",
+// };
+// iTakeFoo(test.someProp); // Okay!
+
+// function iTakeFoo(foo: "foo") {}
+// type Test = {
+//   someProp: "foo";
+// };
+// const test: Test = {
+//   // Annotate - inferred someProp is always === 'foo'
+//   someProp: "foo",
+// };
+// iTakeFoo(test.someProp); // Okay!
+
+// /** Utility function to create a K:V from a list of strings */
+// function strEnum<T extends string>(o: Array<T>): { [K in T]: K } {
+//   return o.reduce((res, key) => {
+//     res[key] = key;
+//     return res;
+//   }, Object.create(null));
+// }
+
+/**
+ * Sample create a string enum
+ */
+
+// /** Create a K:V */
+// const Direction = strEnum(["North", "South", "East", "West"]);
+// /** Create a Type */
+// type Direction = keyof typeof Direction;
+
+// /**
+//  * Sample using a string enum
+//  */
+// let sample: Direction;
+
+// sample = Direction.North; // Okay
+// sample = "North"; // Okay
+// sample = "AnythingElse"; // ERROR!
+
+// -------------------- Readonly -------------------------------
+
+// function foo(config: { readonly bar: number; readonly bas: number }) {
+//   // ..
+// }
+
+// let config = { bar: 123, bas: 123 };
+// foo(config);
+// // You can be sure that `config` isn't changed 🌹
+
+// type Foo = {
+//   readonly bar: number;
+//   readonly bas: number;
+// };
+
+// // Initialization is okay
+// let foo: Foo = { bar: 123, bas: 456 };
+
+// // Mutation is not
+// foo.bar = 456; // Error: Left-hand side of assignment expression cannot be a constant or a read-only property
+
+// class Foo {
+//   readonly bar = 1; // OK
+//   readonly baz: string;
+//   constructor() {
+//     this.baz = "hello"; // OK
+//   }
+// }
+
+// type Foo = {
+//   bar: number;
+//   bas: number;
+// };
+
+// type FooReadonly = Readonly<Foo>;
+
+// let foo: Foo = { bar: 123, bas: 456 };
+// let fooReadonly: FooReadonly = { bar: 123, bas: 456 };
+
+// foo.bar = 456; // Okay
+// fooReadonly.bar = 456; // ERROR: bar is readonly
+
+// /**
+//  * Declaration
+//  */
+// interface Foo {
+//   readonly [x: number]: number;
+// }
+
+// /**
+//  * Usage
+//  */
+// let foo: Foo = { 0: 123, 2: 345 };
+// console.log(foo[0]); // Okay (reading)
+// foo[0] = 456; // Error (mutating): Readonly
+
+// let foo: ReadonlyArray<number> = [1, 2, 3];
+// console.log(foo[0]); // Okay
+// foo.push(4); // Error: `push` does not exist on ReadonlyArray as it mutates the array
+// foo = foo.concat([4]); // Okay: create a copy
+
+// const foo = 123; // variable reference
+// var bar: {
+//   readonly bar: number; // for property
+// };
+
+// let foo: {
+//   readonly bar: number;
+// } = {
+//   bar: 123,
+// };
+
+// function iMutateFoo(foo: { bar: number }) {
+//   foo.bar = 456;
+// }
+
+// iMutateFoo(foo); // The foo argument is aliased by the foo parameter
+// console.log(foo.bar); // 456!
+
+// interface Foo {
+//   readonly bar: number;
+// }
+// let foo: Foo = {
+//   bar: 123,
+// };
+
+// function iTakeFoo(foo: Foo) {
+//   foo.bar = 456; // Error! bar is readonly
+// }
+
+// iTakeFoo(foo); // The foo argument is aliased by the foo parameter
+
+// ----------------- ジェネリック型 --------------------------
+// class Queue {
+//   private data = [];
+//   push(item) {
+//     this.data.push(item);
+//   }
+//   pop() {
+//     return this.data.shift();
+//   }
+// }
+
+// // うまくいかない例
+// class Queue {
+//   private data = [];
+//   push(item) {
+//     this.data.push(item);
+//   }
+//   pop() {
+//     return this.data.shift();
+//   }
+// }
+
+// const queue = new Queue();
+// queue.push(0);
+// queue.push("1"); // Oops a mistake
+
+// // a developer walks into a bar
+// console.log(queue.pop().toPrecision(1));
+// console.log(queue.pop().toPrecision(1)); // RUNTIME ERROR
+
+/** A class definition with a generic parameter */
+// class Queue<T> {
+//   private data: T[] = [];
+//   push(item: T) {
+//     this.data.push(item);
+//   }
+//   pop(): T | undefined {
+//     return this.data.shift();
+//   }
+// }
+
+// /** Again sample usage */
+// const queue = new Queue<number>();
+// queue.push(0);
+// queue.push("1"); // ERROR : cannot push a string. Only numbers allowed
+
+// // ^ if that error is fixed the rest would be fine too
+
+// function reverse<T>(items: T[]): T[] {
+//   var toreturn = [];
+//   for (let i = items.length - 1; i >= 0; i--) {
+//     toreturn.push(items[i]);
+//   }
+//   return toreturn;
+// }
+
+// var sample = [1, 2, 3];
+// var reversed = reverse(sample);
+// console.log(reversed); // 3,2,1
+
+// // Safety!
+// reversed[0] = "1"; // Error!
+// reversed = ["1", "2"]; // Error!
+
+// reversed[0] = 1; // Okay
+// reversed = [1, 2]; // Okay
+
+// class Utility {
+//   constructor(public test = "test") {}
+//   reverse<T>(items: T[]): T[] {
+//     var toreturn = [];
+//     for (let i = items.length - 1; i >= 0; i--) {
+//       toreturn.push(items[i]);
+//     }
+//     return toreturn;
+//   }
+// }
+
+// const getJSON = <T>(config: {
+//   url: string;
+//   headers?: { [key: string]: string };
+// }): Promise<T> => {
+//   const fetchConfig = {
+//     method: "GET",
+//     Accept: "application/json",
+//     "Content-Type": "application/json",
+//     ...(config.headers || {}),
+//   };
+//   return fetch(config.url, fetchConfig).then<T>((response) => response.json());
+// };
+
+// type LoadUsersResponse = {
+//   users: {
+//     name: string;
+//     email: string;
+//   }[]; // array of user objects
+// };
+// function loadUsers() {
+//   return getJSON<LoadUsersResponse>({ url: "https://example.com/users" });
+// }
+
+// declare function send<T>(arg: T): void;
+
+// send<{ y: string }>({
+//   y: "123",
+//   // Also you get autocomplete
+// }); // Will TSError if `x:123` does not match the structure expected for Something
